@@ -38,6 +38,8 @@ namespace TheWorldProject
             services.AddDbContext<WorldContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("WorldContextConnection")));
 
+
+            //seed data
             services.AddTransient<WorldContextSeedData>();
 
             services.AddMvc();
