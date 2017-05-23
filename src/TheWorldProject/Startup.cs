@@ -11,6 +11,7 @@ using TheWorldProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using TheWorldProject.Services;
 
 namespace TheWorldProject
 {
@@ -42,6 +43,8 @@ namespace TheWorldProject
             //seed data
             services.AddTransient<WorldContextSeedData>();
 
+            services.AddScoped<IMailService, DebugMailService>();
+            services.AddScoped<IWorldRepository, WorldRepository>();
             services.AddMvc();
         }
 
@@ -55,9 +58,11 @@ namespace TheWorldProject
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                loggerFactory.AddDebug(LogLevel.Information);
             }
             else
             {
+                loggerFactory.AddDebug(LogLevel.Error);
                 app.UseExceptionHandler("/Home/Error");
             }
 

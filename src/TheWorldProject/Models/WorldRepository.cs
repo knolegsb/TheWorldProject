@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,15 @@ namespace TheWorldProject.Models
 {
     public class WorldRepository : IWorldRepository
     {
+        private WorldContext _context;
+        private ILogger<WorldRepository> _logger;
+
+        public WorldRepository(WorldContext context, ILogger<WorldRepository> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
         public void AddStop(string tripName, string username, Stop newStop)
         {
             throw new NotImplementedException();
@@ -19,7 +29,8 @@ namespace TheWorldProject.Models
 
         public IEnumerable<Trip> GetAllTrips()
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Getting all trips from the database");
+            return _context.Trips.ToList();
         }
 
         public Trip GetTripByName(string tripName, string username)

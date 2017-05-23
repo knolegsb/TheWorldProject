@@ -1,0 +1,18 @@
+﻿@model IEnumerable<TheWorldProject.Models.Trip>
+
+@{ 
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>The World</h1>
+        <p>This will be a fun website</p>
+    </div>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@item.Name</li>
+        }        
+    </ul>
+</div>
