@@ -38,12 +38,13 @@ namespace TheWorldProject.Controllers.Api
             catch (Exception ex)
             {
                 // ToDo Logging
+                _logger.LogError($"Failed to get all trips: {ex}");
                 return BadRequest("Error occurred");
             }
         }
 
         [HttpPost("")]
-        public IActionResult Post([FromBody]TripViewModel theTrip)
+        public async Task<IActionResult> Post([FromBody]TripViewModel theTrip)
         {
             if (ModelState.IsValid)
             {
@@ -55,8 +56,12 @@ namespace TheWorldProject.Controllers.Api
 
                 var newTrip = Mapper.Map<Trip>(theTrip);
 
-                //return Created($"api/trips/{theTrip.Name}", newTrip);
-                return Created($"api/trips/{theTrip.Name}", Mapper.Map<TripViewModel>(newTrip));
+                _repository.AddTrip(newTrip);
+
+                if (await _repository.SaveChangesAsync()) {
+                    //return Created($"api/trips/{theTrip.Name}", newTrip);
+                    return Created($"api/trips/{theTrip.Name}", Mapper.Map<TripViewModel>(newTrip));
+                };                
             }
 
             return BadRequest("Bad data");

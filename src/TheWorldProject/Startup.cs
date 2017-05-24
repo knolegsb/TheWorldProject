@@ -27,10 +27,10 @@ namespace TheWorldProject
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            _config = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfigurationRoot _config { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -40,12 +40,12 @@ namespace TheWorldProject
             // Add framework services.
             //services.AddDbContext<WorldContext>();
             services.AddDbContext<WorldContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("WorldContextConnection")));
+                options.UseSqlServer(_config.GetConnectionString("WorldContextConnection")));
 
-
+            services.AddSingleton(_config);
             //seed data
             services.AddTransient<WorldContextSeedData>();
-
+            services.AddTransient<GeoCoordsService>();
             services.AddScoped<IMailService, DebugMailService>();
             services.AddScoped<IWorldRepository, WorldRepository>();
             services.AddMvc()
@@ -60,8 +60,9 @@ namespace TheWorldProject
             Mapper.Initialize(config =>
             {
                 config.CreateMap<TripViewModel, Trip>().ReverseMap();
+                config.CreateMap<StopViewModel, Stop>().ReverseMap();
             });
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole(_config.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
