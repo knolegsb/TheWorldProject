@@ -1,18 +1,11 @@
 ﻿@model IEnumerable<TheWorldProject.Models.Trip>
-
-@{ 
+@{
     ViewBag.Title = "Home Page";
 }
-
 <div class="row">
-    <div class="col-md-6">
-        <h1>The World</h1>
-        <p>This will be a fun website</p>
+    <div class="col-lg-12">
+        <h1>Welcome to The World</h1>
+        <p>This is a web app that will help you build world trips.</p>
+        <a asp-controller="App" asp-action="Trips" class="btn btn-lg btn-success">Goto Your Trips</a>
     </div>
-    <ul>
-        @foreach (var item in Model)
-        {
-            <li>@item.Name</li>
-        }        
-    </ul>
 </div>

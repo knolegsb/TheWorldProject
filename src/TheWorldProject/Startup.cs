@@ -43,6 +43,29 @@ namespace TheWorldProject
                 options.UseSqlServer(_config.GetConnectionString("WorldContextConnection")));
 
             services.AddSingleton(_config);
+
+            services.AddIdentity<WorldUser, IdentityRole>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Cookies.ApplicationCookie.LoginPath = "/auth/login";
+                config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = async ctx =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                        }
+                        else
+                        {
+                            ctx.Response.Redirect(ctx.RedirectUri);
+                        }
+                        await Task.Yield();
+                    }
+                };
+            })
+            .AddEntityFrameworkStores<WorldContext>();
+
             //seed data
             services.AddTransient<WorldContextSeedData>();
             services.AddTransient<GeoCoordsService>();
